@@ -69,7 +69,8 @@ class QuizGame:
                 except :
                     print("game play error")
                     return
-
+            elif choice == 3:
+                self.show_list()
 
                 
 
@@ -174,7 +175,21 @@ class QuizGame:
             f"\n결과: {total}문제 중 "
             f"{correct_count}문제 정답"
         )
-        
-        
 
+
+    # 퀴즈 추가(2) 를 선택했을때
+    # def add_quiz(self):
+
+    # 퀴즈 목록 보여주기 (3)
+    def show_list(self):
+        if not self.quizzes:
+            print("등록된 퀴즈가 없습니다.")
+            return
         
+        print(f"\n등록된 퀴즈 목록 ({len(self.quizzes)}개)")
+        print("=" * 30)
+
+        for index, quiz in enumerate(self.quizzes, start=1):
+            print(f"{index}. {quiz.question}")
+        
+        print("=" * 30)
