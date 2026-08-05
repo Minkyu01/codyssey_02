@@ -1,9 +1,6 @@
 import json
 import random
 from datetime import datetime
-# from pathlib import Path
-# import Quiz
-
 from .quiz import Quiz
 
 
@@ -195,14 +192,21 @@ class QuizGame:
             print("등록된 퀴즈가 없습니다. ")
             return
 
-        total = len(self.quizzes)
+        # 퀴즈 랜덤하게 석기 
+        # self.quizzes  → 기존 순서 유지 , play_quizzes → 무작위 순서
+        play_quizzes = random.sample(
+            self.quizzes,
+            len(self.quizzes),
+        )
+
+        total = len(play_quizzes)
         correct_count = 0
         hints_used = 0
         score = 0
         point_per_question = 100 / total
 
         # enumerate 란 -> 값과 순서를 함께 꺼내는 함수, 인덱스 시작 번호를 1로 지정한거뿐
-        for number, quiz in enumerate(self.quizzes, start=1,):
+        for number, quiz in enumerate(play_quizzes, start=1,):
             quiz.display_quiz(number, total)
             hint_used = False
 
