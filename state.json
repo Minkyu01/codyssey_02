@@ -23,7 +23,7 @@
       "hint": "조건이 참인지 거짓인지 판단할 때 사용하는 키워드입니다."
     },
     {
-      "question": "Python에서 파일 작업 중 발생할 수 있는 오류를 처리하는 구문은 무엇인가요?",
+      "question": "Python에서 오류를 처리할 때 사용하는 구문은 무엇인가요?",
       "choices": [
         "if / else",
         "try / except",
@@ -31,10 +31,10 @@
         "def / return"
       ],
       "answer": 2,
-      "hint": "예외가 발생할 가능성이 있는 코드와 예외 처리 코드를 나누어 작성합니다."
+      "hint": "예외가 발생할 수 있는 코드와 처리 코드를 나누어 작성합니다."
     },
     {
-      "question": "Git에서 변경한 파일을 커밋할 대상으로 등록하는 명령어는 무엇인가요?",
+      "question": "Git에서 변경한 파일을 커밋 대상으로 등록하는 명령어는 무엇인가요?",
       "choices": [
         "git push",
         "git add",
@@ -42,10 +42,10 @@
         "git pull"
       ],
       "answer": 2,
-      "hint": "작업 디렉터리의 변경 사항을 스테이징 영역에 올리는 명령어입니다."
+      "hint": "변경 사항을 스테이징 영역에 올리는 명령어입니다."
     },
     {
-      "question": "Git에서 원격 저장소를 새로운 로컬 디렉터리로 복제하는 명령어는 무엇인가요?",
+      "question": "Git에서 원격 저장소를 복제하는 명령어는 무엇인가요?",
       "choices": [
         "git merge",
         "git commit",
@@ -53,114 +53,9 @@
         "git checkout"
       ],
       "answer": 3,
-      "hint": "원격 저장소의 파일과 커밋 이력을 처음 내려받을 때 사용합니다."
+      "hint": "원격 저장소를 처음 내려받을 때 사용합니다."
     }
   ],
-  "best_record": {
-    "played_at": "2026-08-05T14:10:47",
-    "total": 1,
-    "correct": 1,
-    "hints_used": 0,
-    "score": 100
-  },
-  "history": [
-    {
-      "played_at": "2026-08-04T11:25:36+09:00",
-      "total": 3,
-      "correct": 0,
-      "hints_used": 0,
-      "score": 0
-    },
-    {
-      "played_at": "2026-08-05T13:32:49",
-      "total": 6,
-      "correct": 0,
-      "hints_used": 0,
-      "score": 0
-    },
-    {
-      "played_at": "2026-08-05T13:33:25",
-      "total": 6,
-      "correct": 4,
-      "hints_used": 0,
-      "score": 67
-    },
-    {
-      "played_at": "2026-08-05T13:34:15",
-      "total": 5,
-      "correct": 4,
-      "hints_used": 0,
-      "score": 80
-    },
-    {
-      "played_at": "2026-08-05T13:35:41",
-      "total": 5,
-      "correct": 2,
-      "hints_used": 0,
-      "score": 40
-    },
-    {
-      "played_at": "2026-08-05T13:37:11",
-      "total": 5,
-      "correct": 3,
-      "hints_used": 0,
-      "score": 60
-    },
-    {
-      "played_at": "2026-08-05T13:41:05",
-      "total": 5,
-      "correct": 1,
-      "hints_used": 5,
-      "score": 0
-    },
-    {
-      "played_at": "2026-08-05T13:52:22",
-      "total": 5,
-      "correct": 0,
-      "hints_used": 5,
-      "score": 0
-    },
-    {
-      "played_at": "2026-08-05T13:52:39",
-      "total": 5,
-      "correct": 1,
-      "hints_used": 5,
-      "score": 10
-    },
-    {
-      "played_at": "2026-08-05T13:53:34",
-      "total": 4,
-      "correct": 1,
-      "hints_used": 4,
-      "score": 12
-    },
-    {
-      "played_at": "2026-08-05T13:53:48",
-      "total": 3,
-      "correct": 1,
-      "hints_used": 3,
-      "score": 17
-    },
-    {
-      "played_at": "2026-08-05T14:10:11",
-      "total": 1,
-      "correct": 1,
-      "hints_used": 1,
-      "score": 50
-    },
-    {
-      "played_at": "2026-08-05T14:10:47",
-      "total": 1,
-      "correct": 1,
-      "hints_used": 0,
-      "score": 100
-    },
-    {
-      "played_at": "2026-08-05T14:10:59",
-      "total": 1,
-      "correct": 0,
-      "hints_used": 0,
-      "score": 0
-    }
-  ]
+  "best_record": null,
+  "history": []
 }

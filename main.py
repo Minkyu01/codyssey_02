@@ -1,12 +1,17 @@
 from pathlib import Path
-
 from classes.quizgame import QuizGame
 
-Default_Path = './state.json'
+# 이럼 루트에 state.json보장이 안됨
+# Default_Path = './state.json'
 
 def main():
-    # state_path = Path(__file__).with_name("state.json")
-    game = QuizGame(Default_Path)
+    # resolve -> 절대경로로 변환, 
+    project_root = Path(__file__).resolve().parent
+    print(Path(__file__).resolve())
+
+    state_path = project_root / "state.json"
+
+    game = QuizGame(state_path)
 
     try :
         game.run()

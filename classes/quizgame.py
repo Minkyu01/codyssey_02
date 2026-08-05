@@ -55,11 +55,6 @@ class QuizGame:
         while True:
             self.show_menu()
             choice = self.read_int("값을 입력해 주세요 : ", 1, 7)
-
-            if choice == 7:
-                print("게임을 종료합니다.")
-                break
-
             
             if choice == 1:
                 # 게임 데이터 로드
@@ -78,10 +73,11 @@ class QuizGame:
                 self.show_best_score()
             elif choice == 6:
                 self.show_history()
+            elif choice == 7:
+                print("게임을 종료합니다.")
+                self.game_save()
+                break
 
-                
-
-            # actions[choice]()
 
     # 메인 화면 보여주기
     def show_menu(self):
@@ -129,17 +125,23 @@ class QuizGame:
             with open(self.state_path, 'r', encoding='utf-8') as f:
                 raw = json.load(f)
 
+            # json 에러 처리
+            if not isinstance(raw, dict):
+                raise ValueError("전체 데이터가 객체 형식이 아닙니다.")
+            if not isinstance(raw.get("quizzes"), list):
+                raise ValueError("quizzes가 목록 형식이 아닙니다.")
+            
             self.quizzes = [
                 Quiz.from_dict(quiz_data)
                 for quiz_data in raw["quizzes"]
             ]
-            # print(self.quizzes)
 
             self.best_record = raw.get("best_record")
             self.history = raw.get("history", [])
             
         except FileNotFoundError : 
             print("state.json 파일이 없습니다.")
+            self.restore_default_state()
             return False
         
         except (
@@ -150,13 +152,10 @@ class QuizGame:
         OSError,
         ) as error:
             print(f"데이터를 불러오지 못했습니다: {error}")
-
-            self.quizzes = [
-                Quiz(*quiz_data)
-                for quiz_data in self.DEFAULT_QUIZZES
-            ]
-
-        return False
+            self.restore_default_state()
+            return False
+        
+        return True
 
     def game_save(self):
         data = {
@@ -171,7 +170,7 @@ class QuizGame:
             with open(
                 self.state_path,
                 "w",
-                encoding="utf-8,"
+                encoding="utf-8"
             )as f:
                 json.dump(
                     data,
@@ -318,10 +317,10 @@ class QuizGame:
 
         #  삭제한거 json에 적용하기
         if self.game_save():
-            print("퀴즈를 성공적으로 추가했습니다.")
+            print("퀴즈를 성공적으로 삭제했습니다.")
         else :
             self.quizzes.pop()
-            print("저장에 실패하여 추가를 취소했습니다.")
+            print("삭제를 실패했습니다.")
         return True
 
     # 최고 점수 기록
@@ -377,3 +376,24 @@ class QuizGame:
 
 
         return  self.game_save()
+
+    # state.json이 잘못되거나 없을때 기본 퀴즈 세팅
+    def set_default_state(self):
+        self.quizzes = [
+            Quiz(*quiz_data)
+            for quiz_data in self.DEFAULT_QUIZZES
+        ]
+
+        self.best_record = None
+        self.history = []
+
+    def restore_default_state(self):
+        self.set_default_state()
+
+        if self.game_save():
+            print("기본 퀴즈 데이터로 초기화했습니다.")
+        else:
+            print(
+                "기본 퀴즈는 사용할 수 있지만 "
+                "파일에는 저장하지 못했습니다."
+            )
