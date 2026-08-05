@@ -77,6 +77,10 @@ class QuizGame:
                 self.show_list()
             elif choice == 4:
                 self.del_quiz()
+            elif choice == 5:
+                self.show_best_score()
+            elif choice == 6:
+                self.show_history()
 
                 
 
@@ -284,3 +288,32 @@ class QuizGame:
             self.quizzes.pop()
             print("저장에 실패하여 추가를 취소했습니다.")
         return True
+
+    # 최고 점수 기록
+    def show_best_score(self):
+        if self.best_record is None:
+            print("아직 플레이 기록이 없습니다.")
+            return
+        record = self.best_record
+
+        print("\n=== 최고 점수 ===")
+        print(f"점수: {record['score']}점")
+        print(f"정답: {record['correct']}/{record['total']}")
+        print(f"힌트 사용: {record['hints_used']}회")
+        print(f"플레이 시간: {record['played_at']}")
+
+    # history 기록 출력
+    def show_history(self):
+        if not self.history:
+            print("아직 플레이 기록이 없습니다.")
+            return
+
+        print("\n=== 플레이 기록 ===")
+
+        for number, record in enumerate(self.history, start=1):
+            print(
+                f"{number}. {record['score']}점 | "
+                f"정답 {record['correct']}/{record['total']} | "
+                f"힌트 {record['hints_used']}회 | "
+                f"{record['played_at']}"
+            )
