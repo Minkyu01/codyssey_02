@@ -3,3 +3,6 @@ __pycache__/
 .DS_Store
 state.json.corrupt-*
 state.json.tmp
+check.md
+CLASSMETHOD_GUIDE.md
+IMPLEMENTATION_PLAN.md

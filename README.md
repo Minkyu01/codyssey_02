@@ -114,7 +114,7 @@ Docs: README 실행 방법 추가
 Refactor: QuizGame 책임 분리
 
 - branch 
-| 번호 | 브랜치 | 커밋 메시지 | 주요 내용 |
+| 번호 | 브랜치 | 커밋 메시지 | 주요 내용 |`
 |---:|---|---|---|
 | 1 | `main` | `Chore: 프로젝트 초기 구조와 과제 문서 추가` | `.gitignore`, `Ques.md`, 구현 계획 |
 | 2 | `main` | `Feat: Quiz 클래스와 기본 퀴즈 추가` | `Quiz` 클래스, 퀴즈 5개, 힌트 |
@@ -141,8 +141,28 @@ Refactor: QuizGame 책임 분리
 | 힌트 데이터 보관 | `Quiz` |
 | 힌트 사용과 점수 차감 | `QuizGame` |
 
+
+
 - 그럼 이제 설계 끝인가, 
 - 일단 뭘 구현흐름 정하고 하나씩 들어가자
 1. 일단 유저 입력을 받기 -> 데이터 불러오기 -> 종료 까지 구현
 2. 일단 state.json불러오기 -> 퀴즈 풀기 할때 보여주기
 3. 퀴즈를 보여줬으니 문제를 풀기
+4. 퀴즈 추가 구현
+5. 퀴즈 삭제
+
+
+#### git merge
+``` bash
+git add classes/quizgame.py
+git commit -m "Feat: 퀴즈 플레이 기능 보완"
+
+git checkout main
+
+git merge --no-ff feature \
+  -m "Merge: 퀴즈 플레이 기능 병합"
+
+git log --oneline --graph --decorate --all
+```
+- 자세한 블로그
+https://velog.io/@emrhssla/%EA%B7%B8%EB%A6%BC%EC%9C%BC%EB%A1%9C-%EC%9D%B4%ED%95%B4%ED%95%98%EB%8A%94-merge-no-ff-squash-rebase-%EA%B7%B8%EB%A6%AC%EA%B3%A0-pull-requestPR
