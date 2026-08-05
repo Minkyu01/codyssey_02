@@ -46,7 +46,6 @@ class QuizGame:
         self.quizzes = [] # json에서 가져온 quiz객체의 데이터모음, 각 문제를 퀴즈 객체로 가지고 있는거임
         self.best_record = None # 최고 기록 저장
         self.history = [] # 게임 기록 저장
-        # self.quizzes = [] # quiz 데이터들, 
 
     def run(self):
         while True:
@@ -69,6 +68,8 @@ class QuizGame:
                 except :
                     print("game play error")
                     return
+            elif choice == 2:
+                self.add_quiz()
             elif choice == 3:
                 self.show_list()
 
@@ -87,7 +88,7 @@ class QuizGame:
         print("6. 플레이 기록 확인")
         print("7. 종료")
 
-    # 입력 검사 
+    # 입력 검사, 대부분 숫자만 입력
     def read_int(self, prompt, min, max):
         while True:
             # strip() -> 문자열 앞뒤 공백 문자 제거
@@ -105,6 +106,15 @@ class QuizGame:
                 return number
 
             print(f"{min}부터 {max} 사이의 값을 입력해주세요.")
+
+    # 퀴즈 추가시 문자열 입력
+    def read_text(self, prompt):
+        while True:
+            text = input(prompt).strip()
+            if text:
+                return text
+            print("값을 입력해 주세요")
+
 
     # 게임 데이터 형식을 따로 사용해야 할듯, -> 퀴즈를 푸는 형식
     def game_load(self):
@@ -143,7 +153,33 @@ class QuizGame:
         return False
 
     def game_save(self):
-        return 
+        data = {
+            "quizzes" : [
+                quiz.to_dict() for quiz in self.quizzes
+            ],
+            "best_record" : self.best_record,
+            "history" : self.history
+        }
+
+        try :
+            with open(
+                self.state_path,
+                "w",
+                encoding="utf-8,"
+            )as f:
+                json.dump(
+                    data,
+                    f,
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            return True
+
+        except OSError as error:
+            print(f"저장하지 못했습니다: {error}")
+            return False
+
+        
 
     # 퀴즈풀기(1) 을 선택했을때
     def game_play(self):
@@ -178,7 +214,38 @@ class QuizGame:
 
 
     # 퀴즈 추가(2) 를 선택했을때
-    # def add_quiz(self):
+    def add_quiz(self):
+        print("\n=== 퀴즈 추가 ===")
+
+        question = self.read_text("문제 입력 :")
+        choices = []
+
+        for number in range(1,5):
+            choice = self.read_text(
+                f"{number} 번 선택지 입력 :"
+            )
+            choices.append(choice)
+
+        answer = self.read_int(
+            "정답 번호 (1 ~ 4) : " , 1,4
+        )
+
+        hint = self.read_text("힌트 입력 : ")
+
+        new_quiz = Quiz(
+            question=question,
+            choices = choices,
+            answer = answer,
+            hint = hint,
+        )
+
+        self.quizzes.append(new_quiz)
+
+        if self.game_save():
+            print("퀴즈를 성공적으로 추가했습니다.")
+        else :
+            self.quizzes.pop()
+            print("저장에 실패하여 추가를 취소했습니다.")
 
     # 퀴즈 목록 보여주기 (3)
     def show_list(self):
