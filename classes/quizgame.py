@@ -188,7 +188,6 @@ class QuizGame:
             print(f"저장하지 못했습니다: {error}")
             return False
 
-        
 
     # 퀴즈풀기(1) 을 선택했을때
     def game_play(self):
@@ -198,28 +197,55 @@ class QuizGame:
 
         total = len(self.quizzes)
         correct_count = 0
+        hints_used = 0
+        score = 0
+        point_per_question = 100 / total
 
         # enumerate 란 -> 값과 순서를 함께 꺼내는 함수, 인덱스 시작 번호를 1로 지정한거뿐
         for number, quiz in enumerate(self.quizzes, start=1,):
             quiz.display_quiz(number, total)
+            hint_used = False
 
             while True:
                 user_input = self.read_int("정답을 입력해 주세요 : ", 1, 5)
+
                 if user_input == 5:
-                    quiz.display_hint(5)
-                    continue 
+                    if hint_used:
+                        print("이 문제에서는 이미 힌트를 사용했습니다.")
+                    else:
+                        quiz.display_hint(number)
+                        hint_used = True
+                        hints_used += 1
+                    continue
                 
                 if quiz.is_correct(user_input):
                     correct_count += 1
+                    earned_score = point_per_question
+                    if hint_used:
+                        earned_score *= 0.5
+
+                    score += earned_score
                     print("정답입니다.")
                 else:
                     print("오답입니다.")
                 break
 
+        score = round(score)
+        # 게임 기록 저장
+        self.save_record(
+            total,
+            correct_count,
+            hints_used,
+            score
+        )
+
         print(
             f"\n결과: {total}문제 중 "
-            f"{correct_count}문제 정답"
+            f"{correct_count}문제 정답 "
+            f"\nscore : {score}"
         )
+
+        self.game_save()
 
 
     # 퀴즈 추가(2) 를 선택했을때
@@ -317,3 +343,28 @@ class QuizGame:
                 f"힌트 {record['hints_used']}회 | "
                 f"{record['played_at']}"
             )
+
+    # 게임 기록 - history 저장
+    def save_record(self, total, correct_count, hints_used, score):
+        # base_score = round(correct_count / total * 100)
+        # score = max(0, base_score - hints_used * 10)
+
+        record = {
+            "played_at": datetime.now().isoformat(timespec="seconds"),
+            "total": total,
+            "correct": correct_count,
+            "hints_used": hints_used,
+            "score": score,
+        }
+
+        self.history.append(record)
+
+        # 최고 기록 저장
+        if (
+            self.best_record is None
+            or score > self.best_record["score"]
+        ):
+            self.best_record = record.copy()
+
+
+        return  self.game_save()

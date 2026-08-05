@@ -54,25 +54,14 @@
       ],
       "answer": 3,
       "hint": "원격 저장소의 파일과 커밋 이력을 처음 내려받을 때 사용합니다."
-    },
-    {
-      "question": "ㅁㅈㄷㅎㅁㅎㅁ",
-      "choices": [
-        "asrag",
-        "awhr",
-        "aerba",
-        "aers"
-      ],
-      "answer": 2,
-      "hint": "\""
     }
   ],
   "best_record": {
-    "played_at": "2026-08-04T11:25:36+09:00",
-    "total": 3,
-    "correct": 0,
+    "played_at": "2026-08-05T13:34:15",
+    "total": 5,
+    "correct": 4,
     "hints_used": 0,
-    "score": 0
+    "score": 80
   },
   "history": [
     {
@@ -81,6 +70,76 @@
       "correct": 0,
       "hints_used": 0,
       "score": 0
+    },
+    {
+      "played_at": "2026-08-05T13:32:49",
+      "total": 6,
+      "correct": 0,
+      "hints_used": 0,
+      "score": 0
+    },
+    {
+      "played_at": "2026-08-05T13:33:25",
+      "total": 6,
+      "correct": 4,
+      "hints_used": 0,
+      "score": 67
+    },
+    {
+      "played_at": "2026-08-05T13:34:15",
+      "total": 5,
+      "correct": 4,
+      "hints_used": 0,
+      "score": 80
+    },
+    {
+      "played_at": "2026-08-05T13:35:41",
+      "total": 5,
+      "correct": 2,
+      "hints_used": 0,
+      "score": 40
+    },
+    {
+      "played_at": "2026-08-05T13:37:11",
+      "total": 5,
+      "correct": 3,
+      "hints_used": 0,
+      "score": 60
+    },
+    {
+      "played_at": "2026-08-05T13:41:05",
+      "total": 5,
+      "correct": 1,
+      "hints_used": 5,
+      "score": 0
+    },
+    {
+      "played_at": "2026-08-05T13:52:22",
+      "total": 5,
+      "correct": 0,
+      "hints_used": 5,
+      "score": 0
+    },
+    {
+      "played_at": "2026-08-05T13:52:39",
+      "total": 5,
+      "correct": 1,
+      "hints_used": 5,
+      "score": 10
+    },
+    {
+      "played_at": "2026-08-05T13:53:34",
+      "total": 4,
+      "correct": 1,
+      "hints_used": 4,
+      "score": 12
+    },
+    {
+      "played_at": "2026-08-05T13:53:48",
+      "total": 3,
+      "correct": 1,
+      "hints_used": 3,
+      "score": 17
     }
   ]
 }
