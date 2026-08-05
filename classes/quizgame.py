@@ -46,23 +46,14 @@ class QuizGame:
 
     def run(self):
         # 게임 로드는 한번만
-        try :
-            self.game_load()
-        except :
-            print("game load error")
-
+        self.game_load()
 
         while True:
             self.show_menu()
             choice = self.read_int("값을 입력해 주세요 : ", 1, 7)
             
             if choice == 1:
-                # 게임 데이터 로드
-                try:
-                    self.game_play()
-                except :
-                    print("game play error")
-                    return
+                self.game_play()
             elif choice == 2:
                 self.add_quiz()
             elif choice == 3:

@@ -16,8 +16,14 @@ def main():
     try :
         game.run()
     except (KeyboardInterrupt, EOFError):
-        print("예외처리 나중에 해놓기")
+        print("\n입력이 중단되었습니다.")
+        
+        if game.game_save():
+                print("현재 데이터를 저장했습니다.")
+        else:
+            print("현재 데이터를 저장하지 못했습니다.")
 
+        print("게임을 안전하게 종료합니다.")
 
 if __name__ == "__main__":
     main()
