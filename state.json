@@ -54,8 +54,40 @@
       ],
       "answer": 3,
       "hint": "원격 저장소를 처음 내려받을 때 사용합니다."
+    },
+    {
+      "question": "sdfgw3reg",
+      "choices": [
+        "243",
+        "are",
+        "23fr",
+        "aer"
+      ],
+      "answer": 3,
+      "hint": "1asa"
     }
   ],
-  "best_record": null,
-  "history": []
+  "best_record": {
+    "played_at": "2026-08-05T16:50:16",
+    "total": 3,
+    "correct": 1,
+    "hints_used": 0,
+    "score": 33
+  },
+  "history": [
+    {
+      "played_at": "2026-08-05T16:50:16",
+      "total": 3,
+      "correct": 1,
+      "hints_used": 0,
+      "score": 33
+    },
+    {
+      "played_at": "2026-08-05T16:50:31",
+      "total": 3,
+      "correct": 0,
+      "hints_used": 0,
+      "score": 0
+    }
+  ]
 }

@@ -7,162 +7,112 @@ Python 기초와 Git 개념을 주제로 한 사지선다형 콘솔 퀴즈 게�
 ## 퀴즈 주제 선정 이유
 퀴즈 게임을 구현하면서 사용하는 Python 기초 문법과 Git 명령어를 자연스럽게 복습하기 위해 이 주제를 선택했습니다. 리스트, 조건문, 예외 처리와 git add, git clone 같은 핵심 개념을 문제로 풀면서 개발 과정에 필요한 내용을 함께 익힐 수 있습니다.
 
-## 실행 방법
+#### 실행 방법
+Python 3.10 이상 사용해야 한다.
+
+Python 버전을 확인합니다.
+```bash
+python3 --version
+```
+
+프로젝트 루트에서 프로그램을 실행합니다.
+```bash
+python3 main.py
+```
 
 ## 기능목록
 
-1. 저장된 모든 퀴즈 풀기와 정답·오답 피드백
+1. 선택한 퀴즈들 풀기와 정답·오답 피드백
 2. 문제, 선택지 4개, 정답 번호를 입력해 퀴즈 추가
 3. 저장된 퀴즈 목록 조회
 4. 최고 점수 조회 및 갱신
 5. 데이터 저장 후 종료
-
-숫자 입력의 앞뒤 공백, 빈 입력, 문자, 범위 밖 숫자를 검사합니다. `Ctrl+C`와 EOF가 발생하면 가능한 범위에서 현재 데이터를 저장하고 종료합니다. 손상된 상태 파일은 `state.json.corrupt-날짜-시간`으로 백업한 뒤 기본 데이터로 복구합니다.
+6. 퀴즈 랜덤 출제
+7. 입력 에러 처리
+8. 힌트 확인과 힌트 사용 시 감점
+9. 퀴즈 삭제
 
 ## 파일 구조
 
 ```text
 01/
-├── Ques.md                         # 과제 원문
 ├── README.md                       # 프로젝트 사용 및 제출 안내
 ├── main.py                         # 실행 진입점
-├── state.json                      # 퀴즈와 최고 점수
-├── src/
-│   └── quiz_game.py                # Quiz, QuizGame 구현
-├── tests/
-│   ├── test_quiz_game.py           # 단위 테스트
-│   └── static_check.sh             # 필수 파일·구조 검사
-├── scripts/
-│   └── verify.sh                   # 전체 자동 검증
-└── docs/
-    ├── getting-started.md          # 빈 폴더부터 재구현하는 방법
-    ├── study-guide.md              # 평가 전 학습 문서
-    ├── evaluation-study-plan.md    # 학습 순서와 실습 계획
-    ├── peer-review.md              # 시연·질문 대비표
-    ├── troubleshooting.md          # 문제 해결 기록
-    └── evidence/                   # 요구사항별 검증 근거
+├── state.json                      # 퀴즈 데이터
+├── .gitignore                      # git에 올리면 안되는 파일들 목록
+└── classes/
+    ├── __init__.py                 # classes 폴더를 Python 패키지로 다루기 위한 파일
+    ├── quiz.py                     # quiz의 클래스 구조
+    └── quizgame.py                 # 전반적인 quizgame의 게임 구현 
 ```
 
-## 데이터 파일
+## 데이터 파일 설명
 
-`state.json`은 UTF-8 JSON 파일입니다.
+
+#### 경로
+
+`state.json`은 `main.py`와 같은 프로젝트 루트에 저장됩니다.
+
+```text
+01/
+├── main.py
+└── state.json
+```
+
+#### 역할
+
+`state.json`은 퀴즈와 플레이 결과를 저장하는 UTF-8 JSON 파일입니다. 프로그램을 종료한 후 다시 실행해도 추가·삭제한 퀴즈, 최고 기록과 플레이 기록을 유지하기 위해 사용합니다.
+
+파일이 없거나 데이터가 손상된 경우에는 기본 퀴즈 데이터로 초기화합니다.
+
+#### 스키마
 
 ```json
 {
   "quizzes": [
     {
-      "question": "문제",
-      "choices": ["선택지 1", "선택지 2", "선택지 3", "선택지 4"],
-      "answer": 1
+      "question": "문제 내용",
+      "choices": [
+        "선택지 1",
+        "선택지 2",
+        "선택지 3",
+        "선택지 4"
+      ],
+      "answer": 1,
+      "hint": "힌트 내용"
     }
   ],
-  "best_score": null,
-  "best_correct": null,
-  "best_total": null
+  "best_record": {
+    "played_at": "2026-08-05T14:10:47",
+    "total": 5,
+    "correct": 4,
+    "hints_used": 1,
+    "score": 70
+  },
+  "history": []
 }
 ```
 
-- `quizzes`: 퀴즈 객체 목록
-- `best_score`: 최고 점수(0~100) 또는 아직 플레이하지 않은 경우 `null`
-- `best_correct`, `best_total`: 최고 점수 당시 정답 수와 전체 문제 수
+- `quizzes`: 등록된 퀴즈 목록
+- `question`: 문제 내용
+- `choices`: 선택지 4개
+- `answer`: 정답 번호(1~4)
+- `hint`: 힌트 내용
+- `best_record`: 최고 점수를 얻은 플레이 기록
+- `history`: 완료한 모든 플레이 기록
+- `played_at`: 플레이한 날짜와 시간
+- `total`: 풀이한 문제 수
+- `correct`: 맞힌 문제 수
+- `hints_used`: 사용한 힌트 수
+- `score`: 최종 점수(0~100)
 
-저장은 임시 파일을 먼저 쓴 뒤 `os.replace`로 교체하는 방식이라 쓰는 도중 원본이 일부만 기록될 위험을 줄였습니다.
+아직 플레이 기록이 없다면 다음처럼 저장됩니다.
 
-
-
-
-## 설명
-
-#### Python 기초
-변수가 무엇이고, 왜 사용하는지 설명할 수 있다.
-- 변수란 값을 담는 공간, 프로그램상에서 필요하잖아 
-
-int, str, bool, list, dict의 차이를 설명할 수 있다.
-- 시스템 상에서 사용되는 자료형 구조, 숫자, 문자열, 참거짓, 배열, 사전 형식
-
-
-for와 while의 차이를 설명하고 적절히 선택할 수 있다.
-- while은 특정 조건이 참인 경우 계속 반복하는 것, 
-- for은 반복횟수가 명확한 경우 사용
-- 이 부분에선 게임 실행을 While로, 문제 출제시는 for을 사용
-
-클래스가 무엇이고, 왜 사용하는지 설명할 수 있다.
-- 클래스 :관련 데이터, 기능들을 하나로 묶어 객체로 만들기 위한 설계도
-- 객체 : 클래스를 기반으로 만들어진 실체, 설계도로 만든 제품
-  - 인스턴스 : 객체와 같은 대상을 가리킴, 관점에 따라 다르게 부르는 것 뿐
-- 메서드 : 객체가 수행하는 기능, 속성: 객체가 가진 데이터
-
-__init__ 메서드와 self의 역할을 설명할 수 있다.
-- 객체가 생성될때 자동호출, 객체 초기값 설정
-- self는 메서드를 호출한 객체 자신을 가리킴
-
-
-클래스의 속성(attribute)과 메서드(method)를 정의하고 활용할 수 있다.
-- 속성 : 객체가 가진 데이터
-- 메서드 : 객체의 데이터를 사용하는 함수
-
-JSON 형식이 무엇이고, 왜 데이터 저장에 사용하는지 설명할 수 있다.
-- JSON은 k-v형식으로 정보 저장함, 
-- Python의 dict, list와 구조가 비슷해 변환하기 쉽다.
-- 정보 저장하는데 별도 DB나 외부 라이브러리 안씀, 다른 언어와 호환성 좋음
-
-#### git set
-- commit
-Feat: 퀴즈 출제 기능 구현
-Fix: 점수 계산 오류 수정
-Docs: README 실행 방법 추가
-Refactor: QuizGame 책임 분리
-
-- branch 
-| 번호 | 브랜치 | 커밋 메시지 | 주요 내용 |`
-|---:|---|---|---|
-| 1 | `main` | `Chore: 프로젝트 초기 구조와 과제 문서 추가` | `.gitignore`, `Ques.md`, 구현 계획 |
-| 2 | `main` | `Feat: Quiz 클래스와 기본 퀴즈 추가` | `Quiz` 클래스, 퀴즈 5개, 힌트 |
-| 3 | `main` | `Feat: 메뉴와 공통 입력 검증 구현` | 메뉴, 빈 입력·문자·범위 오류, 안전 종료 |
-| 4 | `main` | `Feat: JSON 상태 저장과 복구 구현` | UTF-8 저장·불러오기, 손상 파일 처리 |
-| 5 | 기능 브랜치 | `Feat: 퀴즈 출제와 점수 계산 구현` | 문제 출력, 정답 판정, 결과 계산 |
-| 6 | 기능 브랜치 | `Feat: 랜덤 출제 문제 수 선택 힌트 구현` | 보너스 3종 |
-| 7 | `main` | `Feat: 퀴즈 추가 기능 구현` | 문제·선택지·정답·힌트 입력과 저장 |
-| 8 | `main` | `Feat: 퀴즈 목록과 삭제 기능 구현` | 목록, 빈 상태, 삭제와 저장 |
-| 9 | `main` | `Feat: 최고 점수와 플레이 기록 구현` | 최고 기록, 전체 히스토리 |
-| 10 | `main` | `Docs: 실행 방법과 데이터 구조를 README에 정리` | README 필수 항목 완성 |
-
-- 구조
-| 기능 | 담당 클래스 |
-|---|---|
-| 메뉴 출력 | `QuizGame` |
-| 사용자 메뉴 선택 | `QuizGame` |
-| 문제 하나 출력 | `Quiz` |
-| 여러 문제 출제 | `QuizGame` |
-| 정답 확인 | `Quiz` |
-| 점수 계산 | `QuizGame` |
-| 퀴즈 추가·목록·삭제 | `QuizGame` |
-| JSON 저장·불러오기 | `QuizGame` |
-| 힌트 데이터 보관 | `Quiz` |
-| 힌트 사용과 점수 차감 | `QuizGame` |
-
-
-
-- 그럼 이제 설계 끝인가, 
-- 일단 뭘 구현흐름 정하고 하나씩 들어가자
-1. 일단 유저 입력을 받기 -> 데이터 불러오기 -> 종료 까지 구현
-2. 일단 state.json불러오기 -> 퀴즈 풀기 할때 보여주기
-3. 퀴즈를 보여줬으니 문제를 풀기
-4. 퀴즈 추가 구현
-5. 퀴즈 삭제
-
-
-#### git merge
-``` bash
-git add classes/quizgame.py
-git commit -m "Feat: 퀴즈 플레이 기능 보완"
-
-git checkout main
-
-git merge --no-ff feature \
-  -m "Merge: 퀴즈 플레이 기능 병합"
-
-git log --oneline --graph --decorate --all
+```json
+{
+  "best_record": null,
+  "history": []
+}
 ```
-- 자세한 블로그
-https://velog.io/@emrhssla/%EA%B7%B8%EB%A6%BC%EC%9C%BC%EB%A1%9C-%EC%9D%B4%ED%95%B4%ED%95%98%EB%8A%94-merge-no-ff-squash-rebase-%EA%B7%B8%EB%A6%AC%EA%B3%A0-pull-requestPR
+
+
