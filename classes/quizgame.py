@@ -192,22 +192,27 @@ class QuizGame:
             print("등록된 퀴즈가 없습니다. ")
             return
 
+        total = len(self.quizzes)
+
+        # quiz 문제수 입력 받기
+        play_count = self.read_int(f"몇 문제를 풀겠습니까? : 1 ~ {total} ", 1, total)
+
         # 퀴즈 랜덤하게 석기 
         # self.quizzes  → 기존 순서 유지 , play_quizzes → 무작위 순서
         play_quizzes = random.sample(
             self.quizzes,
-            len(self.quizzes),
+            play_count,
+            # len(self.quizzes),
         )
 
-        total = len(play_quizzes)
         correct_count = 0
         hints_used = 0
         score = 0
-        point_per_question = 100 / total
+        point_per_question = 100 / play_count
 
         # enumerate 란 -> 값과 순서를 함께 꺼내는 함수, 인덱스 시작 번호를 1로 지정한거뿐
         for number, quiz in enumerate(play_quizzes, start=1,):
-            quiz.display_quiz(number, total)
+            quiz.display_quiz(number, play_count)
             hint_used = False
 
             while True:
@@ -237,14 +242,14 @@ class QuizGame:
         score = round(score)
         # 게임 기록 저장
         self.save_record(
-            total,
+            play_count,
             correct_count,
             hints_used,
             score
         )
 
         print(
-            f"\n결과: {total}문제 중 "
+            f"\n결과: {play_count}문제 중 "
             f"{correct_count}문제 정답 "
             f"\nscore : {score}"
         )

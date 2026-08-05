@@ -57,11 +57,11 @@
     }
   ],
   "best_record": {
-    "played_at": "2026-08-05T13:34:15",
-    "total": 5,
-    "correct": 4,
+    "played_at": "2026-08-05T14:10:47",
+    "total": 1,
+    "correct": 1,
     "hints_used": 0,
-    "score": 80
+    "score": 100
   },
   "history": [
     {
@@ -140,6 +140,27 @@
       "correct": 1,
       "hints_used": 3,
       "score": 17
+    },
+    {
+      "played_at": "2026-08-05T14:10:11",
+      "total": 1,
+      "correct": 1,
+      "hints_used": 1,
+      "score": 50
+    },
+    {
+      "played_at": "2026-08-05T14:10:47",
+      "total": 1,
+      "correct": 1,
+      "hints_used": 0,
+      "score": 100
+    },
+    {
+      "played_at": "2026-08-05T14:10:59",
+      "total": 1,
+      "correct": 0,
+      "hints_used": 0,
+      "score": 0
     }
   ]
 }
