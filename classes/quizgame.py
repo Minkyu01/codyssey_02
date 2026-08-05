@@ -1,12 +1,11 @@
 import json
 import random
 from datetime import datetime
-from pathlib import Path
+# from pathlib import Path
+# import Quiz
 
 from .quiz import Quiz
 
-MIN = 1
-MAX = 7
 
 class QuizGame:
     DEFAULT_QUIZZES = [
@@ -43,19 +42,36 @@ class QuizGame:
     ]
 
     def __init__(self, state_path="state.json"):
-        self.state_path = Path(state_path) # 데이터 경로 저장
-        self.quizzes = [] # 퀴즈 변경사항들 저장
+        self.state_path = state_path # 데이터 경로 저장
+        self.quizzes = [] # json에서 가져온 quiz객체의 데이터모음, 각 문제를 퀴즈 객체로 가지고 있는거임
         self.best_record = None # 최고 기록 저장
         self.history = [] # 게임 기록 저장
+        # self.quizzes = [] # quiz 데이터들, 
 
     def run(self):
         while True:
             self.show_menu()
-            choice = self.read_int()
+            choice = self.read_int("값을 입력해 주세요 : ", 1, 7)
 
             if choice == 7:
                 print("게임을 종료합니다.")
                 break
+
+            try :
+                self.game_load()
+            except :
+                print("game load error")
+            
+            if choice == 1:
+                # 게임 데이터 로드
+                try:
+                    self.game_play()
+                except :
+                    print("game play error")
+                    return
+
+
+                
 
             # actions[choice]()
 
@@ -71,17 +87,94 @@ class QuizGame:
         print("7. 종료")
 
     # 입력 검사 
-    def read_int(self):
+    def read_int(self, prompt, min, max):
         while True:
             # strip() -> 문자열 앞뒤 공백 문자 제거
-            choice = input("값을 입력해 주세요 : ").strip()
+            choice = input(prompt).strip()
 
+            # if not value:
+            #     print("값을 입력해 주세요.")
+            # continue
             try :
                 number = int(choice)
             except ValueError:
                 print("숫자를 입력해 주세요.")
                 continue
-            if MIN <= number <= MAX:
+            if min <= number <= max:
                 return number
 
-            print(f"{MIN}부터 {MAX} 사이의 값을 입력해주세요.")
+            print(f"{min}부터 {max} 사이의 값을 입력해주세요.")
+
+    # 게임 데이터 형식을 따로 사용해야 할듯, -> 퀴즈를 푸는 형식
+    def game_load(self):
+        # 일단 실패할 경우 생각
+        try : 
+            with open(self.state_path, 'r', encoding='utf-8') as f:
+                raw = json.load(f)
+
+            self.quizzes = [
+                Quiz.from_dict(quiz_data)
+                for quiz_data in raw["quizzes"]
+            ]
+            # print(self.quizzes)
+
+            self.best_record = raw.get("best_record")
+            self.history = raw.get("history", [])
+            
+        except FileNotFoundError : 
+            print("state.json 파일이 없습니다.")
+            return False
+        
+        except (
+        json.JSONDecodeError,
+        KeyError,
+        TypeError,
+        ValueError,
+        OSError,
+        ) as error:
+            print(f"데이터를 불러오지 못했습니다: {error}")
+
+            self.quizzes = [
+                Quiz(*quiz_data)
+                for quiz_data in self.DEFAULT_QUIZZES
+            ]
+
+        return False
+
+    def game_save(self):
+        return 
+
+    # 퀴즈풀기(1) 을 선택했을때
+    def game_play(self):
+        if not self.quizzes:
+            print("등록된 퀴즈가 없습니다. ")
+            return
+
+        total = len(self.quizzes)
+        correct_count = 0
+
+        # enumerate 란 -> 값과 순서를 함께 꺼내는 함수, 인덱스 시작 번호를 1로 지정한거뿐
+        for number, quiz in enumerate(self.quizzes, start=1,):
+            quiz.display_quiz(number, total)
+
+            while True:
+                user_input = self.read_int("정답을 입력해 주세요 : ", 1, 5)
+                if user_input == 5:
+                    quiz.display_hint(5)
+                    continue 
+                
+                if quiz.is_correct(user_input):
+                    correct_count += 1
+                    print("정답입니다.")
+                else:
+                    print("오답입니다.")
+                break
+
+        print(
+            f"\n결과: {total}문제 중 "
+            f"{correct_count}문제 정답"
+        )
+        
+        
+
+        
