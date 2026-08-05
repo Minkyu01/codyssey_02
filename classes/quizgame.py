@@ -48,6 +48,13 @@ class QuizGame:
         self.history = [] # 게임 기록 저장
 
     def run(self):
+        # 게임 로드는 한번만
+        try :
+            self.game_load()
+        except :
+            print("game load error")
+
+
         while True:
             self.show_menu()
             choice = self.read_int("값을 입력해 주세요 : ", 1, 7)
@@ -56,10 +63,6 @@ class QuizGame:
                 print("게임을 종료합니다.")
                 break
 
-            try :
-                self.game_load()
-            except :
-                print("game load error")
             
             if choice == 1:
                 # 게임 데이터 로드
@@ -72,6 +75,8 @@ class QuizGame:
                 self.add_quiz()
             elif choice == 3:
                 self.show_list()
+            elif choice == 4:
+                self.del_quiz()
 
                 
 
@@ -260,3 +265,22 @@ class QuizGame:
             print(f"{index}. {quiz.question}")
         
         print("=" * 30)
+
+    # 퀴즈 삭제 (4)
+    def del_quiz(self):
+        total =len(self.quizzes) 
+        if not total :
+            print("등록된 퀴즈가 없습니다.")
+            return False
+
+        value = self.read_int(f"삭제할 퀴즈 번호를 말해주세요 (1 ~ {total}) : ", 1, total)
+
+        self.quizzes.pop(value - 1)
+
+        #  삭제한거 json에 적용하기
+        if self.game_save():
+            print("퀴즈를 성공적으로 추가했습니다.")
+        else :
+            self.quizzes.pop()
+            print("저장에 실패하여 추가를 취소했습니다.")
+        return True
