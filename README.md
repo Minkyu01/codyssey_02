@@ -135,3 +135,7 @@ python3 main.py
 
 - git log --oneline --graph 결과 스크린샷
 ![alt text](./images/image-git-log.png)
+
+---
+- git실습
+-  clone, pull 구현 실습
