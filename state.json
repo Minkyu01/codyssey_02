@@ -64,15 +64,15 @@
         "aer"
       ],
       "answer": 3,
-      "hint": "1asa"
+      "hint": "3333"
     }
   ],
   "best_record": {
-    "played_at": "2026-08-05T16:50:16",
-    "total": 3,
+    "played_at": "2026-08-06T13:32:21",
+    "total": 2,
     "correct": 1,
     "hints_used": 0,
-    "score": 33
+    "score": 80
   },
   "history": [
     {
@@ -88,6 +88,13 @@
       "correct": 0,
       "hints_used": 0,
       "score": 0
+    },
+    {
+      "played_at": "2026-08-06T13:32:21",
+      "total": 2,
+      "correct": 2,
+      "hints_used": 0,
+      "score": 100
     }
   ]
 }

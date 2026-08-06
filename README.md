@@ -44,6 +44,8 @@ python3 main.py
     ├── __init__.py                 # classes 폴더를 Python 패키지로 다루기 위한 파일
     ├── quiz.py                     # quiz의 클래스 구조
     └── quizgame.py                 # 전반적인 quizgame의 게임 구현 
+    └── play_record.py              # 게임 기록 구조화 
+    └── state_store.py              # json 읽고 쓰기
 ```
 
 ## 데이터 파일 설명
@@ -106,8 +108,7 @@ python3 main.py
 - `hints_used`: 사용한 힌트 수
 - `score`: 최종 점수(0~100)
 
-아직 플레이 기록이 없다면 다음처럼 저장됩니다.
-
+아직 플레이 기록이 없다면, 전체 데이터 중 기록 관련 필드는 다음과 같습니다. 실제 `state.json`에는 `quizzes`도 함께 저장됩니다.
 ```json
 {
   "best_record": null,
@@ -116,3 +117,21 @@ python3 main.py
 ```
 
 
+#### 스크린샷
+- 플레이 화면
+![alt text](./images/image-1.png)
+
+- 퀴즈 추가 -> 아래 목록 화면에 추가됨
+![alt text](./images/image-3.png)
+
+- 퀴즈 목록 출력
+![alt text](./images/image-2.png)
+
+- 최고점수 및 플레이 기록 확인
+![alt text](./images/image-4.png)
+
+- git, python version
+![alt text](./images/image-git.png)
+
+- git log --oneline --graph 결과 스크린샷
+![alt text](./images/image-git-log.png)

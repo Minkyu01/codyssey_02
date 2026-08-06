@@ -6,6 +6,34 @@ class Quiz:
         answer: int,
         hint: str = "",
     ):
+
+        # Quiz 타입 에러 검증
+        if not isinstance(question, str):
+            raise TypeError("문제는 문자열이어야 합니다.")
+        if not question.strip():
+                    raise ValueError("문제는 비어 있을 수 없습니다.")
+        if not isinstance(choices, list):
+            raise TypeError("선택지는 리스트여야 합니다.")
+        if len(choices) != 4:
+            raise ValueError("선택지는 정확히 4개여야 합니다.")
+        for choice in choices:
+            if not isinstance(choice, str):
+                raise TypeError(
+                    "각 선택지는 문자열이어야 합니다."
+                )
+            if not choice.strip():
+                raise ValueError(
+                    "선택지는 비어 있을 수 없습니다."
+                )
+        if type(answer) is not int:
+            raise TypeError("정답은 정수여야 합니다.")
+        if not 1 <= answer <= 4:
+            raise ValueError(
+                "정답은 1부터 4 사이여야 합니다."
+            )
+        if not isinstance(hint, str):
+            raise TypeError("힌트는 문자열이어야 합니다.")
+
         self.question = question
         self.choices = list(choices)
         self.answer = answer
@@ -18,8 +46,8 @@ class Quiz:
         print("5. 힌트 보기")
         
 
-    def display_hint(self, number):
-        print(f"{number}. {self.hint}")
+    def display_hint(self):
+        print(f"힌트: {self.hint} ")
 
         
     def is_correct(self, selected):

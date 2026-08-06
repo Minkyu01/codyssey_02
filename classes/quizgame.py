@@ -1,8 +1,7 @@
-import json
 import random
-from datetime import datetime
 from .quiz import Quiz
-
+from .state_store import StateStore
+from .play_record import PlayRecord
 
 class QuizGame:
     DEFAULT_QUIZZES = [
@@ -39,7 +38,7 @@ class QuizGame:
     ]
 
     def __init__(self, state_path="state.json"):
-        self.state_path = state_path # 데이터 경로 저장
+        self.store = StateStore(state_path)
         self.quizzes = [] # json에서 가져온 quiz객체의 데이터모음, 각 문제를 퀴즈 객체로 가지고 있는거임
         self.best_record = None # 최고 기록 저장
         self.history = [] # 게임 기록 저장
@@ -87,9 +86,6 @@ class QuizGame:
             # strip() -> 문자열 앞뒤 공백 문자 제거
             choice = input(prompt).strip()
 
-            # if not value:
-            #     print("값을 입력해 주세요.")
-            # continue
             try :
                 number = int(choice)
             except ValueError:
@@ -112,69 +108,38 @@ class QuizGame:
     # 게임 데이터 형식을 따로 사용해야 할듯, -> 퀴즈를 푸는 형식
     def game_load(self):
         # 일단 실패할 경우 생각
-        try : 
-            with open(self.state_path, 'r', encoding='utf-8') as f:
-                raw = json.load(f)
+        try:
+            (
+                self.quizzes,
+                self.best_record,
+                self.history,
+            ) = self.store.load()
 
-            # json 에러 처리
-            if not isinstance(raw, dict):
-                raise ValueError("전체 데이터가 객체 형식이 아닙니다.")
-            if not isinstance(raw.get("quizzes"), list):
-                raise ValueError("quizzes가 목록 형식이 아닙니다.")
-            
-            self.quizzes = [
-                Quiz.from_dict(quiz_data)
-                for quiz_data in raw["quizzes"]
-            ]
-
-            self.best_record = raw.get("best_record")
-            self.history = raw.get("history", [])
-            
-        except FileNotFoundError : 
+        except FileNotFoundError:
             print("state.json 파일이 없습니다.")
             self.restore_default_state()
-            return False
-        
+
         except (
-        json.JSONDecodeError,
-        KeyError,
-        TypeError,
-        ValueError,
-        OSError,
+            KeyError,
+            TypeError,
+            ValueError,
+            OSError,
         ) as error:
             print(f"데이터를 불러오지 못했습니다: {error}")
             self.restore_default_state()
-            return False
-        
-        return True
 
     def game_save(self):
-        data = {
-            "quizzes" : [
-                quiz.to_dict() for quiz in self.quizzes
-            ],
-            "best_record" : self.best_record,
-            "history" : self.history
-        }
-
-        try :
-            with open(
-                self.state_path,
-                "w",
-                encoding="utf-8"
-            )as f:
-                json.dump(
-                    data,
-                    f,
-                    ensure_ascii=False,
-                    indent=2,
-                )
+        try:
+            self.store.save(
+                self.quizzes,
+                self.best_record,
+                self.history,
+            )
             return True
 
-        except OSError as error:
-            print(f"저장하지 못했습니다: {error}")
-            return False
-
+        except (OSError, TypeError) as error:
+                print(f"저장하지 못했습니다: {error}")
+                return False
 
     # 퀴즈풀기(1) 을 선택했을때
     def game_play(self):
@@ -192,7 +157,6 @@ class QuizGame:
         play_quizzes = random.sample(
             self.quizzes,
             play_count,
-            # len(self.quizzes),
         )
 
         correct_count = 0
@@ -212,7 +176,7 @@ class QuizGame:
                     if hint_used:
                         print("이 문제에서는 이미 힌트를 사용했습니다.")
                     else:
-                        quiz.display_hint(number)
+                        quiz.display_hint()
                         hint_used = True
                         hints_used += 1
                     continue
@@ -230,8 +194,9 @@ class QuizGame:
                 break
 
         score = round(score)
-        # 게임 기록 저장
-        self.save_record(
+
+        # 게임 기록 저장, save
+        saved = self.save_record(
             play_count,
             correct_count,
             hints_used,
@@ -244,7 +209,8 @@ class QuizGame:
             f"\nscore : {score}"
         )
 
-        self.game_save()
+        if not saved:
+            print("플레이 결과를 기록에 저장하지 못했습니다.")
 
 
     # 퀴즈 추가(2) 를 선택했을때
@@ -304,28 +270,30 @@ class QuizGame:
 
         value = self.read_int(f"삭제할 퀴즈 번호를 말해주세요 (1 ~ {total}) : ", 1, total)
 
-        self.quizzes.pop(value - 1)
+        # self.quizzes.pop(value - 1) 
+        index = value - 1
+        deleted_quiz = self.quizzes.pop(index)
 
         #  삭제한거 json에 적용하기
         if self.game_save():
-            print("퀴즈를 성공적으로 삭제했습니다.")
+            print("퀴즈를 성공적으로 삭제했습니다.")            
         else :
-            self.quizzes.pop()
-            print("삭제를 실패했습니다.")
-        return True
+            self.quizzes.insert(index, deleted_quiz)
+            print("저장에 실패하여 삭제를 취소했습니다.")
 
     # 최고 점수 기록
     def show_best_score(self):
         if self.best_record is None:
             print("아직 플레이 기록이 없습니다.")
             return
+
         record = self.best_record
 
         print("\n=== 최고 점수 ===")
-        print(f"점수: {record['score']}점")
-        print(f"정답: {record['correct']}/{record['total']}")
-        print(f"힌트 사용: {record['hints_used']}회")
-        print(f"플레이 시간: {record['played_at']}")
+        print(f"점수: {record.score}점")
+        print(f"정답: {record.correct}/{record.total}")
+        print(f"힌트 사용: {record.hints_used}회")
+        print(f"플레이 시간: {record.played_at}")
 
     # history 기록 출력
     def show_history(self):
@@ -337,36 +305,37 @@ class QuizGame:
 
         for number, record in enumerate(self.history, start=1):
             print(
-                f"{number}. {record['score']}점 | "
-                f"정답 {record['correct']}/{record['total']} | "
-                f"힌트 {record['hints_used']}회 | "
-                f"{record['played_at']}"
-            )
+            f"{number}. {record.score}점 | "
+            f"정답 {record.correct}/{record.total} | "
+            f"힌트 {record.hints_used}회 | "
+            f"{record.played_at}"
+        )
 
     # 게임 기록 - history 저장
     def save_record(self, total, correct_count, hints_used, score):
-        # base_score = round(correct_count / total * 100)
-        # score = max(0, base_score - hints_used * 10)
-
-        record = {
-            "played_at": datetime.now().isoformat(timespec="seconds"),
-            "total": total,
-            "correct": correct_count,
-            "hints_used": hints_used,
-            "score": score,
-        }
-
+        previous_best = self.best_record
+        record = PlayRecord.create(
+            total=total,
+            correct=correct_count,
+            hints_used=hints_used,
+            score=score,
+        )
         self.history.append(record)
-
         # 최고 기록 저장
         if (
             self.best_record is None
-            or score > self.best_record["score"]
+            or score > self.best_record.score
         ):
-            self.best_record = record.copy()
+            self.best_record = record
 
+        # 파일 권한 변경할때
+        if self.game_save():
+            return True
 
-        return  self.game_save()
+        # 저장 실패: 방금 변경한 메모리를 복원
+        self.history.pop()
+        self.best_record = previous_best
+        return False
 
     # state.json이 잘못되거나 없을때 기본 퀴즈 세팅
     def set_default_state(self):
