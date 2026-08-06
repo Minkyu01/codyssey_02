@@ -136,8 +136,13 @@ python3 main.py
 - git log --oneline --graph 결과 스크린샷
 ![alt text](./images/image-git-log.png)
 
-- git clone 실습
-![alt text](./image-clone.png)
 
+- git clone 실습
+![alt text](./images/image-clone.png)
+
+- git push, pulll 실습
+![alt text](./images/image-push.png)
+![alt text](./images/image-pull.png)
 ---
+
 - GitHub 저장소: https://github.com/Minkyu01/codyssey_02
